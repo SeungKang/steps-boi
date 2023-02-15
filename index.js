@@ -33,7 +33,9 @@ const CookieBunnyID = process.env.CookieBunnyID
 client.on("ready", () => {
   console.log("The bot is ready");
 });
-                        
+
+// the bot replys to !steps progress or a message reaction by calling this function to print the
+// current progress bar for the challenge
 function printProgressBar(stepCount, starsCount, user = 0, reaction = 0, message = 0) {
 
   let precentage = Math.round((stepCount / stepGoal) * 100);
@@ -53,6 +55,7 @@ function printProgressBar(stepCount, starsCount, user = 0, reaction = 0, message
   let progressMessage = ""
   let startMessage = ""
 
+  // checking if trigger was a reaction or a call to !steps progress
   if (reaction == 0) {
     progressMessage = message
   } else {
@@ -74,8 +77,8 @@ function printProgressBar(stepCount, starsCount, user = 0, reaction = 0, message
 
 client.on("messageReactionAdd", (reaction, user) => {
 
-
-  if (reaction.message.channel.id != messageChannelID && messageChannelID) {
+  // bot to only work in one channel at a time
+  if (reaction.message.channel.id != messageChannelID) {
     return;
   }
 
@@ -88,15 +91,17 @@ client.on("messageReactionAdd", (reaction, user) => {
     return;
   }
 
+  // only respond to messages that start with !steps
   if (!reaction.message.content.toLowerCase().startsWith(PREFIX)) {
     return;
   }
 
-  // const guild = reaction.message.guild;
-  // const guildMembers = guild.members;
-  // const guildMember = guildMembers.cache.get(user.id);
+  // code to use roles instead of one user
+      // const guild = reaction.message.guild;
+      // const guildMembers = guild.members;
+      // const guildMember = guildMembers.cache.get(user.id);
 
-  //let isAdministrator = guildMember.roles.cache.some((role) => role.name === "Administrator")
+      //let isAdministrator = guildMember.roles.cache.some((role) => role.name === "Administrator")
 
   if (user.id != CookieBunnyID) {
     return;
@@ -112,56 +117,42 @@ client.on("messageReactionAdd", (reaction, user) => {
     return;
   }
 
+  // remove any commas from a command ex. !steps 23,992
   const commandName = parts[1].replace(",", "");
 
+  // if a number was provided
   if (!isNaN(commandName)){
     stepCount = stepCount + Math.round(Number(commandName));
 
+    // add to star count if step count is above threshold
     if (Number(commandName) > starGoal) {
       starsCount++;
     }
 
+    // write state data to the json file
     data["stepCount"] = stepCount
     data["starsCount"] = starsCount
 
     const JsonFileStream = fs.createWriteStream("./challenge-data.json")
 
-    //JSON.striginfy makes the object into a string, `null, 6` makes it prettier
+    // JSON.striginfy makes the object into a string, `null, 6` makes it prettier
     JsonFileStream.write(JSON.stringify(data, null, 6), err => {
       if(err) console.error(err);
     })
 
+    // bot reaction with thumbs up
     reaction.message.react("👍");
 
-  } else if (commandName == "add") {
-    // e.g. !steps add 500
-    if (!isNaN(parts[2])){
-      stepCount += Math.round(Number(parts[2]));
-    }
-
-    if (!isNaN(parts[3])){
-      starsCount += Math.round(Number(parts[3]));
-    }
-
+  // !steps remove 4334
+  // reaction on remove command will remove steps from the total
   } else if (commandName == "remove") {
     // e.g. !steps remove 500
     if (!isNaN(parts[2])) {
       stepCount -= Math.round(Number(parts[2]));
-      
-      if (stepCount < 0) {
-        stepCount = 0;
-      }
-    }
-
-    if (!isNaN(parts[3])) {
-      starsCount -= Math.round(Number(parts[3]));
-
-      if (starsCount < 0) {
-        starsCount = 0;
-      }
     }
   }
 
+  // reply with the progress bar
   printProgressBar(stepCount, starsCount, user, reaction, undefined);
 
 
@@ -173,9 +164,11 @@ client.on("messageCreate", (message) => {
   // !buh
   if (message.content == "buh") {
     let numberOfBuh = Math.floor(Math.random() * 5) + 1;
+    // reply with a random number of buhs from 1 to 5
     message.channel.send("buh! ".repeat(numberOfBuh));
   }
 
+  // only have bot reply to one channel ID
   if (message.channel.id != messageChannelID) {
     return;
   }
