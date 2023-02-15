@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# PROVIDE: stepsboi
+# REQUIRE: LOGIN FILESYSTEMS
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="stepsboi"
+# Required so that rc.d can match the PID and the process name:
+# https://forums.freebsd.org/threads/rc-d-doesnt-see-my-pidfile.69141/
+procname="/bin/sh"
+desc="stepsboi"
+rcvar="${name}_enable"
+pidfile="/var/run/${name}.pid"
+command="/usr/sbin/daemon"
+command_args="-o /var/log/stepsboi.log -p ${pidfile} -- ${procname} /root/run.sh"
+
+load_rc_config $name
+run_rc_command "$@"
