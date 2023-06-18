@@ -10,6 +10,7 @@ ExecStartPre=git pull --ff-only
 ExecStart=node .
 KillMode=process
 Restart=on-failure
+RestartSec=30
 RestartPreventExitStatus=255
 Type=simple
 User=stepsboi
