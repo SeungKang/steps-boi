@@ -1,0 +1,19 @@
+[Unit]
+Description=steps boi
+After=network.target
+
+[Service]
+RootDirectory=/
+WorkingDirectory=/home/stepsboi/steps-boi
+EnvironmentFile=/etc/stepsboi/buh
+ExecStartPre=git pull --ff-only
+ExecStart=node .
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=simple
+User=stepsboi
+Group=stepsboi
+
+[Install]
+WantedBy=multi-user.target
