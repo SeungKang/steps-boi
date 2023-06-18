@@ -23,7 +23,7 @@ var data = require("./challenge-data.json");
 var stepCount = data["stepCount"];
 var starsCount = data["starsCount"];
 
-var stepGoal = 800000;
+var stepGoal = 1000000;
 var starGoal = 5000;
 const PREFIX = "!steps";
 const messageChannelID = process.env.ChannelID
@@ -163,7 +163,7 @@ client.on("messageCreate", (message) => {
 
   // !buh
   if (message.content == "buh") {
-    let numberOfBuh = Math.floor(Math.random() * 5) + 1;
+    let numberOfBuh = Math.floor(Math.random() * 10) + 1;
     // reply with a random number of buhs from 1 to 5
     message.channel.send("buh! ".repeat(numberOfBuh));
   }
@@ -188,8 +188,8 @@ client.on("messageCreate", (message) => {
   // Post the details of the steps challenge
   if (message.content == PREFIX) {
     message.reply(
-      "**Steps Challenge:** Reach 300,000 steps as a community!!" +
-        "\nChallenge runs for one week from February 1st to 7th." +
+      "**Steps Challenge:** Reach 1,000,000 steps as a community!!" +
+        "\nChallenge runs for one week from June 18th to 25th." +
         "\n" +
         "\nOnce a day, in the steps discord channel, submit steps by typing the command `!steps` followed by the number of steps you took!    e.g. `!steps 3400`" +
         "\nInclude a screenshot of an app that shows the number of steps you took so that it can be validated." +
@@ -199,9 +199,7 @@ client.on("messageCreate", (message) => {
         "\nSubmit steps for either the previous day or current day." +
         "\nOnce it is validated it'll be added to the community total! 😊" +
         "\n" +
-        "\nIf 300K is reached, a donation of $100 will be made at ESA Winter!!" +
-        "\nAdditionally, if we reach **35 stars**, this will be an additional $100 donation!! 🥳" +
-        "\nHave fun, Good luck! Share pics of your walking adventures!"
+        "\nHave fun, Good luck! Share pics! Buh!"
     );
     return;
   }
